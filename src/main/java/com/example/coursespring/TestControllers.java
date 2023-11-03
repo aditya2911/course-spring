@@ -11,7 +11,7 @@ public class TestControllers {
     MongoRepositoryTest mt;
     @GetMapping("/")
     public String test(){
-        return "ariba";
+        return "adityaaaa";
     }
 
     @GetMapping("/test")
