@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,8 +15,8 @@ public class topicDTO {
     private String id;
     private String title;
     private String blog;
-    private String courseID;
     private String email;
-    private String dateAdded;
-    private Course course;
+    private Date dateAdded;
+    private String courseId;
 }
+

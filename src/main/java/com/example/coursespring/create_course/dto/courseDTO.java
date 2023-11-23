@@ -5,14 +5,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Setter
 @Getter
 @NoArgsConstructor
 public class courseDTO {
-    private Integer id;
+    private String id;
     private String courseTitle;
     private String description;
-    private List<Topic> topics = new ArrayList<>();
+    private String email;
+    private Date createdAt;
 }

@@ -1,12 +1,11 @@
-package com.example.coursespring.create_topic.service.impl;
+package com.example.coursespring.create_course.service.impl;
 
 import com.example.coursespring.create_course.dto.courseDTO;
 import com.example.coursespring.create_course.models.Course;
 import com.example.coursespring.create_course.repository.CourseRepository;
 
-import com.example.coursespring.create_topic.model.Topic;
+import com.example.coursespring.create_course.service.courseService;
 import com.example.coursespring.create_topic.repositories.TopicRepository;
-import com.example.coursespring.create_topic.service.courseService;
 import com.example.coursespring.exceptions.ResourceNotFoundException;
 import com.example.coursespring.response.PostResponse;
 import com.example.coursespring.user.repository.UserRepository;
@@ -16,10 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class courseServiceImpl implements courseService {
 
     @Autowired
@@ -33,8 +34,22 @@ public class courseServiceImpl implements courseService {
     @Autowired
     private ModelMapper modelmapper;
 
+
     @Override
-    public courseDTO updateCourse(courseDTO courseDTO, Integer cid) {
+    public courseDTO createCourse(courseDTO coursedto) {
+        Course course = this.modelmapper.map(coursedto,Course.class);
+        course.setCourseTitle(coursedto.getCourseTitle());
+        course.setDescription(coursedto.getDescription());
+        course.setEmail(coursedto.getEmail());
+        course.setCreatedAt(coursedto.getCreatedAt());
+
+        Course newCourse = this.cRepo.save(course);
+        return this.modelmapper.map(newCourse,courseDTO.class);
+    }
+
+
+    @Override
+    public courseDTO updateCourse(courseDTO courseDTO, String cid) {
         Course course = this.cRepo.findById(cid)
                 .orElseThrow(() -> new ResourceNotFoundException("Course","Id",cid));
         course.setCourseTitle(courseDTO.getCourseTitle());
@@ -45,7 +60,7 @@ public class courseServiceImpl implements courseService {
     }
 
     @Override
-    public void deleteCourse(Integer cid) {
+    public void deleteCourse(String cid) {
         Course course = this.cRepo.findById(cid)
                 .orElseThrow(() -> new ResourceNotFoundException("Course","Id",cid));
         this.cRepo.delete(course);
@@ -54,12 +69,6 @@ public class courseServiceImpl implements courseService {
     @Override
     public PostResponse getAllCourses(Integer pagenumber, Integer size, String sortBy, String sortOrder) {
         Sort sort = (sortOrder.equalsIgnoreCase("asc"))?sort = Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
-//        if(sortOrder.equalsIgnoreCase("asc")){
-//            sort = Sort.by(sortBy).ascending();
-//        }
-//        else{
-//            sort = Sort.by(sortBy).descending();
-//        }
         Pageable p = PageRequest.of(pagenumber,size,sort);
         Page<Course> pageCourse = this.cRepo.findAll(p);
 
@@ -80,24 +89,14 @@ public class courseServiceImpl implements courseService {
     }
 
     @Override
-    public courseDTO getCourseById(Integer cid) {
+    public courseDTO getCourseById(String cid) {
         Course course = this.cRepo.findById(cid)
                 .orElseThrow(() -> new ResourceNotFoundException("Post","Id",cid));
         return this.modelmapper.map(course, courseDTO.class);
     }
 
     @Override
-    public List<courseDTO> getAllCoursesByTopic(Integer tid) {
-        Topic topic = this.tRepo.findById(tid)
-                .orElseThrow(() -> new ResourceNotFoundException("Category","Id",tid));
-        List<Course> posts = this.cRepo.findByTopic()
-        List<postDto> postsDto = posts.stream().map((post) -> this.modelmapper.map(post, postDto.class))
-                .collect(Collectors.toList());
-        return postsDto;
-    }
-
-    @Override
-    public List<courseDTO> getAllCoursesByUser(Integer uid) {
+    public List<courseDTO> getAllCoursesByUser(String uid) {
         return null;
     }
 

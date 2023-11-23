@@ -4,7 +4,7 @@ import com.example.coursespring.create_topic.model.Topic;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 
-public interface TopicRepository extends MongoRepository<Topic, Integer> {
+public interface TopicRepository extends MongoRepository<Topic, String> {
 
     Topic findByEmail(String email);
 }
