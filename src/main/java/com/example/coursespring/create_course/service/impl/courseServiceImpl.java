@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class courseServiceImpl implements courseService {
         course.setCourseTitle(coursedto.getCourseTitle());
         course.setDescription(coursedto.getDescription());
         course.setEmail(coursedto.getEmail());
-        course.setCreatedAt(coursedto.getCreatedAt());
+        course.setCreatedAt(LocalDate.now());
 
         Course newCourse = this.cRepo.save(course);
         return this.modelmapper.map(newCourse,courseDTO.class);

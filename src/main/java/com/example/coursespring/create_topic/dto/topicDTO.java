@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -16,7 +17,7 @@ public class topicDTO {
     private String title;
     private String blog;
     private String email;
-    private Date dateAdded;
+    private LocalDate dateAdded;
     private String courseId;
 }
 
