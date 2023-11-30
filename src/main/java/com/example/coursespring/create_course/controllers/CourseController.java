@@ -52,6 +52,12 @@ public class CourseController {
     }
 
 
+    @GetMapping("/user-courses/{email}")
+    public ResponseEntity<List<courseDTO>> fetchCoursesByEmail(@PathVariable String email ){
+            List<courseDTO> userCourses = this.courseService.getCoursesByEmail(email);
+            return  ResponseEntity.ok(userCourses);
+    }
+
     @PutMapping(value = "/{courseId}")
     public ResponseEntity<courseDTO> updateCourse(@Valid @RequestBody courseDTO courseDto, @PathVariable("courseId") String cid){
         courseDTO updateCourse = this.courseService.updateCourse(courseDto,cid);

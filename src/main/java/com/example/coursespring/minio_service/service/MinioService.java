@@ -42,32 +42,32 @@ public class MinioService {
         this.configurationProperties = configurationProperties;
     }
 
-    public List<Item> list() {
+    public List list() {
         ListObjectsArgs args = (ListObjectsArgs)((ListObjectsArgs.Builder)ListObjectsArgs.builder().bucket(this.configurationProperties.getBucket())).prefix("").recursive(false).build();
         Iterable<Result<Item>> myObjects = this.minioClient.listObjects(args);
         return this.getItems(myObjects);
     }
 
-    public List<Item> fullList() {
+    public List fullList() {
         ListObjectsArgs args = (ListObjectsArgs)((ListObjectsArgs.Builder)ListObjectsArgs.builder().bucket(this.configurationProperties.getBucket())).build();
         Iterable<Result<Item>> myObjects = this.minioClient.listObjects(args);
         return this.getItems(myObjects);
     }
 
-    public List<Item> list(Path path) {
+    public List list(Path path) {
         ListObjectsArgs args = (ListObjectsArgs)((ListObjectsArgs.Builder)ListObjectsArgs.builder().bucket(this.configurationProperties.getBucket())).prefix(path.toString()).recursive(false).build();
         Iterable<Result<Item>> myObjects = this.minioClient.listObjects(args);
         return this.getItems(myObjects);
     }
 
-    public List<Item> getFullList(Path path) {
+    public List getFullList(Path path) {
         ListObjectsArgs args = (ListObjectsArgs)((ListObjectsArgs.Builder)ListObjectsArgs.builder().bucket(this.configurationProperties.getBucket())).prefix(path.toString()).build();
         Iterable<Result<Item>> myObjects = this.minioClient.listObjects(args);
         return this.getItems(myObjects);
     }
 
-    private List<Item> getItems(Iterable<Result<Item>> myObjects) {
-        return (List)StreamSupport.stream(myObjects.spliterator(), true).map((itemResult) -> {
+    private List getItems(Iterable<Result<Item>> myObjects) {
+        return StreamSupport.stream(myObjects.spliterator(), true).map((itemResult) -> {
             try {
                 return (Item)itemResult.get();
             } catch (Exception var2) {
@@ -94,7 +94,7 @@ public class MinioService {
         }
     }
 
-    public Map<Path, StatObjectResponse> getMetadata(Iterable<Path> paths) {
+    public Map getMetadata(Iterable<Path> paths) {
         return (Map)StreamSupport.stream(paths.spliterator(), false).map((path) -> {
             try {
                 StatObjectArgs args = (StatObjectArgs)((StatObjectArgs.Builder)((StatObjectArgs.Builder)StatObjectArgs.builder().bucket(this.configurationProperties.getBucket())).object(path.toString())).build();

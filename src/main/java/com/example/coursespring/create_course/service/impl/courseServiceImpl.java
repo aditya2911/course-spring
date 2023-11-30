@@ -15,9 +15,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +60,21 @@ public class courseServiceImpl implements courseService {
 
         Course updateCourse = this.cRepo.save(course);
         return this.modelmapper.map(updateCourse, courseDTO.class);
+    }
+
+ @Override
+    @PreAuthorize("#email==principal.username")
+    public List<courseDTO> getCoursesByEmail(String email) {
+
+
+        List<Course> course = this.cRepo.findByEmail(email);
+        ArrayList<courseDTO> listOfCourses = new ArrayList<courseDTO>() ;
+     for (Course value : course) {
+         courseDTO temp = this.modelmapper.map(value, courseDTO.class);
+         listOfCourses.add(temp);
+
+     }
+        return  listOfCourses;
     }
 
     @Override

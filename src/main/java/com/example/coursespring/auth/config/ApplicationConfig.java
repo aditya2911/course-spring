@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 
 @Configuration
 @RequiredArgsConstructor
@@ -42,5 +43,11 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // `principal` provider for the Spring-Data JPQL requests
+    @Bean
+    public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
+        return new SecurityEvaluationContextExtension();
     }
 }
