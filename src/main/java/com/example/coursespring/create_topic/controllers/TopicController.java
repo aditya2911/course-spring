@@ -4,6 +4,7 @@ import com.example.coursespring.auth.config.appConstants;
 
 import com.example.coursespring.create_topic.dto.topicDTO;
 
+import com.example.coursespring.create_topic.model.Topic;
 import com.example.coursespring.create_topic.service.topicService;
 import com.example.coursespring.response.ApiResponse;
 
@@ -48,10 +49,11 @@ public class TopicController {
     }
 
 
-    @GetMapping("/allTopics/{courseId}")
-    public ResponseEntity<List<TopicResponse>> getAllTopicsByCourseId(@PathVariable String courseId){
+    @GetMapping("/course-topics/{courseId}")
+    public ResponseEntity<List<Topic>> getAllTopicsByCourseId(@PathVariable String courseId){
 
-        ArrayList<TopicResponse> listOfTopics = new ArrayList<>();
+        ArrayList<Topic> listOfTopics = new ArrayList<>();
+        listOfTopics = (ArrayList<Topic>) tService.getAllTopicsByCourseID(courseId);
         return ResponseEntity.ok(listOfTopics);
     }
     //get all topics

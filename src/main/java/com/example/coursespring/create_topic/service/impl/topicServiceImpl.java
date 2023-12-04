@@ -59,6 +59,11 @@ public class topicServiceImpl implements topicService {
     }
 
     @Override
+    public List<Topic> getAllTopicsByCourseID(String courseId) {
+        return this.trepo.findByCourseId(courseId);
+    }
+
+    @Override
     public void deleteTopic(String tid) {
         Topic topic = this.trepo.findById(tid)
                 .orElseThrow(() -> new ResourceNotFoundException("Topic","ID",tid));
