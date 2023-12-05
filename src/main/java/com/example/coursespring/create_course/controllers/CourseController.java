@@ -21,7 +21,7 @@ import java.util.List;
 public class CourseController {
 
     @Autowired
-    private courseService courseService;
+    private     courseService courseService;
 
 
 //    @Autowired
@@ -51,6 +51,12 @@ public class CourseController {
         return new ResponseEntity<>(newCourse, HttpStatus.CREATED);
     }
 
+
+    @GetMapping("/user-courses/{email}")
+    public ResponseEntity<List<courseDTO>> fetchCoursesByEmail(@PathVariable String email ){
+            List<courseDTO> userCourses = this.courseService.getCoursesByEmail(email);
+            return  ResponseEntity.ok(userCourses);
+    }
 
     @PutMapping(value = "/{courseId}")
     public ResponseEntity<courseDTO> updateCourse(@Valid @RequestBody courseDTO courseDto, @PathVariable("courseId") String cid){

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CourseRepository extends MongoRepository<Course,String> {
 
-    List<Course> findByEmail();
+    List<Course> findByEmail(String email);
 }

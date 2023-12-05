@@ -4,6 +4,7 @@ import com.example.coursespring.auth.config.appConstants;
 
 import com.example.coursespring.create_topic.dto.topicDTO;
 
+import com.example.coursespring.create_topic.model.Topic;
 import com.example.coursespring.create_topic.service.topicService;
 import com.example.coursespring.response.ApiResponse;
 
@@ -14,6 +15,9 @@ import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController()
@@ -44,6 +48,14 @@ public class TopicController {
         return new ResponseEntity<ApiResponse>(new ApiResponse("Topic " + tid + " Deleted Successfully",true),HttpStatus.OK);
     }
 
+
+    @GetMapping("/course-topics/{courseId}")
+    public ResponseEntity<List<Topic>> getAllTopicsByCourseId(@PathVariable String courseId){
+
+        ArrayList<Topic> listOfTopics = new ArrayList<>();
+        listOfTopics = (ArrayList<Topic>) tService.getAllTopicsByCourseID(courseId);
+        return ResponseEntity.ok(listOfTopics);
+    }
     //get all topics
     @GetMapping("/alltopics")
     public ResponseEntity<TopicResponse> getAllTopics(

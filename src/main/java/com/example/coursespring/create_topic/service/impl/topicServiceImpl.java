@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class topicServiceImpl implements topicService {
         topic.setTitle(topicDto.getTitle());
         topic.setBlog(topicDto.getBlog());
         topic.setEmail(topicDto.getEmail());
-        topic.setDateAdded(new Date());
+        topic.setDateAdded(LocalDate.now());
         topic.setCourseId(topicDto.getCourseId());
 
         Topic newTopic = this.trepo.save(topic);
@@ -51,10 +52,15 @@ public class topicServiceImpl implements topicService {
                 .orElseThrow(() -> new ResourceNotFoundException("Topic","ID",tid));
         topic.setTitle(topicDto.getTitle());
         topic.setBlog(topicDto.getBlog());
-        topic.setDateAdded(new Date());
+        topic.setDateAdded(LocalDate.now());
 
         Topic updateTopic = this.trepo.save(topic);
         return this.model.map(updateTopic, topicDTO.class);
+    }
+
+    @Override
+    public List<Topic> getAllTopicsByCourseID(String courseId) {
+        return this.trepo.findByCourseId(courseId);
     }
 
     @Override
