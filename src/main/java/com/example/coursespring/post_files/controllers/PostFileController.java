@@ -1,35 +1,33 @@
-package com.example.coursespring.post_image.controllers;
+package com.example.coursespring.post_files.controllers;
 
 
 
 import com.example.coursespring.minio_service.service.MinioService;
 import io.minio.errors.MinioException;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.nio.file.Path;
 
 @RestController
-@RequestMapping("/api/v1/images")
+@RequestMapping("/api/v1/files")
 
-public class PostImageController {
+public class PostFileController {
 
     private final MinioService minioService;
 
     @Autowired
-PostImageController(MinioService ms){
+    PostFileController(MinioService ms){
     this.minioService = ms;
 }
-  @GetMapping("/get/{imageName}")
+  @GetMapping("images/get/{imageName}")
  public void getImageByName( @PathVariable("imageName") String image,HttpServletResponse response) throws MinioException {
         String object = image;
       InputStream inputStream = minioService.get(Path.of(object));
@@ -55,7 +53,7 @@ PostImageController(MinioService ms){
   }
 
 
-    @PostMapping("/post")
+    @PostMapping("/images/post")
     public void postImage(@RequestParam("file") MultipartFile file) {
         Path path = Path.of(file.getOriginalFilename());
         try {
