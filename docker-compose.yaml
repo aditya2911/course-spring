@@ -19,7 +19,14 @@ services:
       - POSTGRES_PASSWORD=password
     expose:
       - 3001
-
+  keycloak:
+    image: bitnami/keycloak
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: h2
+    ports:
+      - "8081:8080"
 
   springboot-app:
     build: .
