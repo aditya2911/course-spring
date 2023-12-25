@@ -52,10 +52,49 @@ public class PostFileController {
 
   }
 
+    @GetMapping("pdf/get/{pdfName}")
+    public void getPdfByName( @PathVariable("pdfName") String pdfName,HttpServletResponse response) throws MinioException {
+
+        InputStream inputStream = minioService.get(Path.of(pdfName));
+        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+
+        // Set the content type and attachment header.
+        response.setHeader( "Content-disposition","inline; filename="+pdfName+"pdf");
+        response.setContentType("application/pdf");
+
+        // Copy the stream to the response's output stream.
+        try {
+            IOUtils.copy(inputStream, response.getOutputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            response.flushBuffer();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
 
     @PostMapping("/images/post")
     public void postImage(@RequestParam("file") MultipartFile file) {
         Path path = Path.of(file.getOriginalFilename());
+        try {
+            minioService.upload(path, file.getInputStream(), file.getContentType());
+        } catch (MinioException e) {
+            throw new IllegalStateException("The file cannot be upload on the internal storage. Please retry later", e);
+        } catch (IOException e) {
+            throw new IllegalStateException("The file cannot be read", e);
+        }
+    }
+
+    @PostMapping("/pdf/post")
+    public void postPdf(@RequestParam("file") MultipartFile file) {
+        Path path = Path.of(file.getOriginalFilename());
+        System.out.println((file.getOriginalFilename( )));
         try {
             minioService.upload(path, file.getInputStream(), file.getContentType());
         } catch (MinioException e) {
