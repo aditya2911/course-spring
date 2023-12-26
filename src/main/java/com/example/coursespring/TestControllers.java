@@ -1,6 +1,7 @@
 package com.example.coursespring;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,6 +11,7 @@ public class TestControllers {
     @Autowired
     MongoRepositoryTest mt;
     @GetMapping("/")
+
     public String test(){
         return "adityaaaa";
     }

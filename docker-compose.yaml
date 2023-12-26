@@ -7,7 +7,6 @@ services:
       - mongo-data:/data/db
     ports:
       - "27017:27017"
-
   postgres:
     image: postgres:16.0
     volumes:
@@ -20,13 +19,23 @@ services:
     expose:
       - 3001
   keycloak:
-    image: bitnami/keycloak
+    image: quay.io/keycloak/keycloak:21.0.2
+    command: start-dev
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-      DB_VENDOR: h2
+      DB_VENDOR: POSTGRES
+      DB_PORT: 3001
+      DB_ADDR: postgres
+      DB_DATABASE: postgres
+      DB_USER: postgres
+      DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - "8081:8080"
+    depends_on:
+      - postgres
+
+
 
   springboot-app:
     build: .
