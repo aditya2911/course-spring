@@ -18,6 +18,7 @@ services:
       - POSTGRES_PASSWORD=password
     expose:
       - 3001
+  # make sure the keycloak version matches with the dependency in pom.xml
   keycloak:
     image: quay.io/keycloak/keycloak:21.0.2
     command: start-dev
