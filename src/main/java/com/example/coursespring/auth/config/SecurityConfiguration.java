@@ -34,7 +34,7 @@ private final JwtAuthConverter jwtAuthConverter;
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth->auth.requestMatchers("/users/register").permitAll().anyRequest().authenticated());
+                .authorizeHttpRequests(auth->auth.requestMatchers("/**").permitAll().anyRequest().authenticated());
 
 
                 http.oauth2ResourceServer(oauth2->oauth2.jwt(jwtConfigurer -> jwtConfigurer

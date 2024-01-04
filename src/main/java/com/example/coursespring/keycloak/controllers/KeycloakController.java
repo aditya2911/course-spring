@@ -1,13 +1,22 @@
 package com.example.coursespring.keycloak.controllers;
 
 
+import com.example.coursespring.keycloak.dto.LoginRequest;
 import com.example.coursespring.keycloak.dto.UserRegistrationRecord;
 import com.example.coursespring.keycloak.service.KeycloakUserService;
 import com.example.coursespring.keycloak.service.impl.KeycloakUserServiceImpl;
 import lombok.AllArgsConstructor;
+import okhttp3.Cookie;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.core.Response;
+import java.net.HttpCookie;
 import java.security.Principal;
 
 @RestController
@@ -23,9 +32,14 @@ public class KeycloakController {
 
 
         @PostMapping("/register")
-        public UserRegistrationRecord createUser(@RequestBody UserRegistrationRecord userRegistrationRecord) {
+        public ResponseEntity<String> createUser(@RequestBody UserRegistrationRecord userRegistrationRecord) {
+            Response response = keycloakUserService.createUser(userRegistrationRecord);
+            if(response.getStatus() == 201){
+                return  ResponseEntity.status(HttpStatus.OK).body("User has been created");
+            }else{
+                return  ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
+            }
 
-            return  keycloakUserService.createUser(userRegistrationRecord);
         }
 
         @GetMapping("/get-user")
@@ -40,6 +54,22 @@ public class KeycloakController {
         return "test";
     }
 
+
+    @PostMapping("/login")
+
+    public ResponseEntity<AccessTokenResponse> loginUser(@RequestBody LoginRequest loginRequest){
+        AccessTokenResponse token = null;
+
+             try {
+
+                         token = keycloakUserService.loginUser(loginRequest);
+                return ResponseEntity.status(HttpStatus.OK).body(token);
+            }
+            catch (BadRequestException e) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(token);
+
+            }
+    }
 
     @DeleteMapping("/{userId}")
         public void deleteUserById(@PathVariable String userId) {
