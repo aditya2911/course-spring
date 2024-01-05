@@ -2,9 +2,11 @@ package com.example.coursespring.keycloak.controllers;
 
 
 import com.example.coursespring.keycloak.dto.LoginRequest;
+import com.example.coursespring.keycloak.dto.RefreshTokenRequest;
 import com.example.coursespring.keycloak.dto.UserRegistrationRecord;
 import com.example.coursespring.keycloak.service.KeycloakUserService;
 import com.example.coursespring.keycloak.service.impl.KeycloakUserServiceImpl;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import okhttp3.Cookie;
 import org.keycloak.representations.AccessTokenResponse;
@@ -69,6 +71,20 @@ public class KeycloakController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(token);
 
             }
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<JsonNode> getRefreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
+            ResponseEntity<JsonNode> token = null;
+
+
+                token = keycloakUserService.refreshToken(refreshTokenRequest.refresh_token());
+                if(token.getStatusCode().equals(HttpStatus.OK)){
+                    return  token;
+                }else{
+                    return ResponseEntity.status(token.getStatusCode() ).body(token.getBody());
+                }
+
     }
 
     @DeleteMapping("/{userId}")

@@ -1,10 +1,12 @@
 package com.example.coursespring.keycloak.service.impl;
+import org.springframework.http.*;
 
 import com.example.coursespring.keycloak.config.KeycloakInitializerConfigurationProperties;
 import com.example.coursespring.keycloak.dto.LoginRequest;
 import com.example.coursespring.keycloak.dto.UserRegistrationRecord;
 import com.example.coursespring.keycloak.service.KeycloakUserService;
- import lombok.extern.slf4j.Slf4j;
+import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -15,6 +17,10 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
 
 
 import javax.ws.rs.core.Response;
@@ -130,8 +136,37 @@ return response;
     public  AccessTokenResponse loginUser(LoginRequest loginRequest) {
         Keycloak user = userBuilder(loginRequest.username(), loginRequest.password());
 
-        return user.tokenManager().getAccessToken();
+        AccessTokenResponse response = user.tokenManager().getAccessToken();
+        user.close();
+        return response;
 
+
+    }
+
+    @Override
+    public ResponseEntity<JsonNode> refreshToken(String refreshToken) {
+        String url = keycloakInitializerConfigurationProperties.getUrl()
+                +"/realms/"
+                +keycloakInitializerConfigurationProperties.getApplicationRealm()
+                +"/protocol/openid-connect/token";
+
+        RestTemplate resttemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "refresh_token");
+        map.add("client_id", keycloakInitializerConfigurationProperties.getClientId());
+        map.add("refresh_token",refreshToken);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        ResponseEntity<JsonNode> response = resttemplate.exchange(url, HttpMethod.POST,request,JsonNode.class);
+
+
+
+        return response;
 
     }
 }
