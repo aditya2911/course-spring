@@ -52,7 +52,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
 
         UserRepresentation user=new UserRepresentation();
         user.setEnabled(true);
-        user.setUsername(userRegistrationRecord.username());
+        user.setUsername(userRegistrationRecord.userName());
         user.setEmail(userRegistrationRecord.email());
         user.setFirstName(userRegistrationRecord.firstName());
         user.setLastName(userRegistrationRecord.lastName());

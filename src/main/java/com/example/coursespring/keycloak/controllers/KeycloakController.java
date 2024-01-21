@@ -20,6 +20,8 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.Response;
 import java.net.HttpCookie;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -34,12 +36,16 @@ public class KeycloakController {
 
 
         @PostMapping("/register")
-        public ResponseEntity<String> createUser(@RequestBody UserRegistrationRecord userRegistrationRecord) {
+        public ResponseEntity<Map<String,String>> createUser(@RequestBody UserRegistrationRecord userRegistrationRecord) {
             Response response = keycloakUserService.createUser(userRegistrationRecord);
+            Map<String, String> responseBody = new HashMap<>();
             if(response.getStatus() == 201){
-                return  ResponseEntity.status(HttpStatus.OK).body("User has been created");
+                responseBody.put("message", "User has been created");
+
+                return  ResponseEntity.status(HttpStatus.OK).body(responseBody);
             }else{
-                return  ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
+                responseBody.put("error", "Forbidden");
+                return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseBody);
             }
 
         }
