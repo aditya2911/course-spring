@@ -63,8 +63,7 @@ public class courseServiceImpl implements courseService {
     }
 
  @Override
-    @PreAuthorize("#email==principal.username")
-    public List<courseDTO> getCoursesByEmail(String email) {
+     public List<courseDTO> getCoursesByEmail(String email) {
 
 
         List<Course> course = this.cRepo.findByEmail(email);

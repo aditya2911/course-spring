@@ -15,34 +15,47 @@ import org.springframework.security.config.annotation.web.configurers.oauth2.ser
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
- @EnableMethodSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
-
-private final JwtAuthConverter jwtAuthConverter;
- //   private final JwtAuthenticationFilter jwtAuthFilter;
-
-  //  private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthConverter jwtAuthConverter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth->auth.requestMatchers("/users/register").permitAll().anyRequest().authenticated());
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth->auth.requestMatchers("/users/login","/api/v1/files/images/get/**","/api/v1/files/pdf/get/**","users/refresh-token","users/register"   ).permitAll().anyRequest().authenticated());
 
 
-                http.oauth2ResourceServer(oauth2->oauth2.jwt(jwtConfigurer -> jwtConfigurer
-                        .jwtAuthenticationConverter(jwtAuthConverter)));
+        http.oauth2ResourceServer(oauth2->oauth2.jwt(jwtConfigurer -> jwtConfigurer
+                .jwtAuthenticationConverter(jwtAuthConverter)));
 
-                http.sessionManagement(sess->sess.sessionCreationPolicy(STATELESS));
+        http.sessionManagement(sess->sess.sessionCreationPolicy(STATELESS));
 
         return http.build();
     }
-}
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Allow specific origin
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS")); // Allow specific HTTP methods
+        configuration.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Apply CORS configuration to all endpoints
+        return source;
+    }
+}
