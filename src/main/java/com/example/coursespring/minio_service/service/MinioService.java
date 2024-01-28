@@ -35,8 +35,8 @@ public class MinioService {
     public MinioService(  MinioConfigurationProperties configurationProperties) {
         this.minioClient =
                 MinioClient.builder()
-                        .endpoint("http://127.0.0.1:9000")
-                        .credentials("kLCT3SoXFtABCAd8o9r3", "HeIDr6HaNf3LecD8lcdRd7nI2RODYrwKIijbc6qs")
+                        .endpoint("http://host.docker.internal:9000")
+                        .credentials("LLAeZEof6DLzOeJn45VM", "RDKSdxCNlvrcUgRQwwnP3LgmVv5fIjF4ItqbCqYS")
 
                         .build();
         this.configurationProperties = configurationProperties;
