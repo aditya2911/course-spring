@@ -37,7 +37,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth->auth.requestMatchers("/users/login","/api/v1/files/images/get/**","/api/v1/files/pdf/get/**","users/refresh-token","users/register"   ).permitAll().anyRequest().authenticated());
+                .authorizeHttpRequests(auth->auth.requestMatchers("/users/login","/api/v1/files/images/get/**","/api/v1/files/**","users/refresh-token","users/register"   ).permitAll().anyRequest().authenticated());
 
 
         http.oauth2ResourceServer(oauth2->oauth2.jwt(jwtConfigurer -> jwtConfigurer
